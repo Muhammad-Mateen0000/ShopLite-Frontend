@@ -50,7 +50,7 @@ export const getProducts = async (
   params.set("page", String(filters.page));
   params.set("limit", String(filters.limit));
 
-  const response = await fetch(`${API_URL}/products?${params.toString()}`, {
+  const response = await fetch(`${API_URL}/api/products?${params.toString()}`, {
     cache: "no-store",
   });
 
