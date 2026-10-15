@@ -1,3 +1,4 @@
+
 import type {
   ProductResponse,
   ProductsResponse,
@@ -50,9 +51,10 @@ export const getProducts = async (
   params.set("page", String(filters.page));
   params.set("limit", String(filters.limit));
 
-  const response = await fetch(`${API_URL}/products?${params.toString()}`, {
-    cache: "no-store",
-  });
+  const response = await fetch(
+    `${API_URL}/api/products?${params.toString()}`,
+    { cache: "no-store" },
+  );
 
   if (!response.ok) {
     throw new Error("Unable to load products. Please try again.");
@@ -63,10 +65,13 @@ export const getProducts = async (
   return data;
 };
 
-export const getProductById = async (id: string): Promise<ProductResponse> => {
-  const response = await fetch(`${API_URL}/products/${id}`, {
-    cache: "no-store",
-  });
+export const getProductById = async (
+  id: string,
+): Promise<ProductResponse> => {
+  const response = await fetch(
+    `${API_URL}/api/products/${encodeURIComponent(id)}`,
+    { cache: "no-store" },
+  );
 
   if (!response.ok) {
     throw new Error("Unable to load the product. Please try again.");
