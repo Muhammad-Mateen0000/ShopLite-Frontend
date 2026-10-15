@@ -26,18 +26,24 @@ export const createCheckoutSession = async (
   }
 
   const response = await fetch(
-    `${API_URL}/checkout/create-session`,
+    `${API_URL}/api/checkout/create-session`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${session.access_token}`,
       },
-      body: JSON.stringify({
-        items,
-      }),
+      body: JSON.stringify({ items }),
     },
   );
+
+  const contentType = response.headers.get("content-type");
+
+  if (!contentType?.includes("application/json")) {
+    throw new Error(
+      "Server returned an invalid response. Please check the checkout API URL.",
+    );
+  }
 
   const data: CheckoutResponse & {
     message?: string;
