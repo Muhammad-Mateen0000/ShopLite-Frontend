@@ -4,10 +4,10 @@ import type {
   ProductFilters,
 } from "../types/product";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL?.replace(/\/+$/, "");
 
 if (!API_URL) {
-  throw new Error("API URL is missing.");
+  throw new Error("API URL is missing. Check VITE_API_URL.");
 }
 
 const dollarsToCents = (value: string): string => {
@@ -50,29 +50,33 @@ export const getProducts = async (
   params.set("page", String(filters.page));
   params.set("limit", String(filters.limit));
 
-  const response = await fetch(`${API_URL}/api/products?${params.toString()}`, {
-    cache: "no-store",
-  });
+  const response = await fetch(
+    `${API_URL}/api/products?${params.toString()}`,
+    { cache: "no-store" },
+  );
 
   if (!response.ok) {
-    throw new Error("Unable to load products. Please try again.");
+    throw new Error(
+      `Unable to load products. Server returned ${response.status}.`,
+    );
   }
 
-  const data: ProductsResponse = await response.json();
-
-  return data;
+  return (await response.json()) as ProductsResponse;
 };
 
-export const getProductById = async (id: string): Promise<ProductResponse> => {
-  const response = await fetch(`${API_URL}/products/${id}`, {
-    cache: "no-store",
-  });
+export const getProductById = async (
+  id: string,
+): Promise<ProductResponse> => {
+  const response = await fetch(
+    `${API_URL}/api/products/${encodeURIComponent(id)}`,
+    { cache: "no-store" },
+  );
 
   if (!response.ok) {
-    throw new Error("Unable to load the product. Please try again.");
+    throw new Error(
+      `Unable to load the product. Server returned ${response.status}.`,
+    );
   }
 
-  const data: ProductResponse = await response.json();
-
-  return data;
+  return (await response.json()) as ProductResponse;
 };
